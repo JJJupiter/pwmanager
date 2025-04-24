@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { PasswordOptions } from '../types/password';
 import { generatePassword, calculatePasswordStrength } from '../utils/passwordGenerator';
+import { AnimatedNumber } from './AnimatedNumber';
+import { useConfetti } from '../hooks/useConfetti';
 
 const PasswordGenerator = () => {
   const [password, setPassword] = useState('');
@@ -12,6 +14,7 @@ const PasswordGenerator = () => {
     includeSymbols: true,
   });
   const [copied, setCopied] = useState(false);
+  const { triggerConfetti } = useConfetti();
 
   // Generate password whenever options change
   useEffect(() => {
@@ -31,8 +34,14 @@ const PasswordGenerator = () => {
   };
 
   // Function to handle all option changes
-  const handleOptionChange = (optionName: keyof PasswordOptions, value: boolean | number) => {
+  const handleOptionChange = (optionName: keyof PasswordOptions, value: boolean | number, event?: React.MouseEvent) => {
     setOptions(prev => ({ ...prev, [optionName]: value }));
+    
+    // Trigger confetti for toggle switches
+    if (event && typeof value === 'boolean') {
+      const rect = (event.target as HTMLElement).getBoundingClientRect();
+      triggerConfetti(rect.x + rect.width / 2, rect.y + rect.height / 2);
+    }
   };
 
   const strength = calculatePasswordStrength(password);
@@ -89,12 +98,13 @@ const PasswordGenerator = () => {
         <div>
           <div className="flex items-center justify-between mb-2">
             <label className="text-gray-700">Password length</label>
-            <span className="text-gray-600">{options.length}</span>
+            <AnimatedNumber value={options.length} />
           </div>
           <input
             type="range"
             min="8"
             max="32"
+            step="1"
             value={options.length}
             onChange={(e) => handleOptionChange('length', Number(e.target.value))}
             className="w-full"
@@ -108,7 +118,7 @@ const PasswordGenerator = () => {
               <input
                 type="checkbox"
                 checked={options.includeUppercase}
-                onChange={(e) => handleOptionChange('includeUppercase', e.target.checked)}
+                onChange={(e) => handleOptionChange('includeUppercase', e.target.checked, e.nativeEvent as unknown as React.MouseEvent)}
               />
               <span className="slider"></span>
             </label>
@@ -120,7 +130,7 @@ const PasswordGenerator = () => {
               <input
                 type="checkbox"
                 checked={options.includeLowercase}
-                onChange={(e) => handleOptionChange('includeLowercase', e.target.checked)}
+                onChange={(e) => handleOptionChange('includeLowercase', e.target.checked, e.nativeEvent as unknown as React.MouseEvent)}
               />
               <span className="slider"></span>
             </label>
@@ -132,7 +142,7 @@ const PasswordGenerator = () => {
               <input
                 type="checkbox"
                 checked={options.includeNumbers}
-                onChange={(e) => handleOptionChange('includeNumbers', e.target.checked)}
+                onChange={(e) => handleOptionChange('includeNumbers', e.target.checked, e.nativeEvent as unknown as React.MouseEvent)}
               />
               <span className="slider"></span>
             </label>
@@ -144,7 +154,7 @@ const PasswordGenerator = () => {
               <input
                 type="checkbox"
                 checked={options.includeSymbols}
-                onChange={(e) => handleOptionChange('includeSymbols', e.target.checked)}
+                onChange={(e) => handleOptionChange('includeSymbols', e.target.checked, e.nativeEvent as unknown as React.MouseEvent)}
               />
               <span className="slider"></span>
             </label>

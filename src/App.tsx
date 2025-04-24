@@ -3,10 +3,10 @@ import { useVideoBackground } from './hooks/useVideoBackground'
 import videoBkg from './assets/videobkg.mp4'
 
 function App() {
-  const { video1Ref, video2Ref, isFirstVideoActive, transitionClasses } = useVideoBackground({
+  const { video1Ref, video2Ref, opacity1, opacity2 } = useVideoBackground({
     videoSrc: videoBkg,
-    transitionDuration: 2000,
-    startTransitionBeforeEnd: 2
+    fadeOverlap: 2000,
+    startTransitionBeforeEnd: 3
   });
 
   return (
@@ -17,7 +17,9 @@ function App() {
           ref={video1Ref}
           playsInline
           muted
-          className={`${transitionClasses} ${isFirstVideoActive ? 'opacity-100' : 'opacity-0'}`}
+          loop
+          className="absolute min-w-full min-h-full object-cover"
+          style={{ opacity: opacity1 }}
         >
           <source src={videoBkg} type="video/mp4" />
         </video>
@@ -25,7 +27,9 @@ function App() {
           ref={video2Ref}
           playsInline
           muted
-          className={`${transitionClasses} ${isFirstVideoActive ? 'opacity-0' : 'opacity-100'}`}
+          loop
+          className="absolute min-w-full min-h-full object-cover"
+          style={{ opacity: opacity2 }}
         >
           <source src={videoBkg} type="video/mp4" />
         </video>

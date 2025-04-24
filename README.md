@@ -40,4 +40,4 @@ A modern, responsive password generator built with React and TailwindCSS. Genera
 
 ## 🤝 Contributing
 
-Contributions, issues, and feature requests are welcome!
+Contributions, issues, and feature requests are welcome! -also u stink
